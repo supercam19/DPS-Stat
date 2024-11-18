@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection.Emit;
+using System.Text;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,45 +10,41 @@ using StardewValley.Tools;
 
 namespace DPS_Stat
 {
-    public class ModEntry : Mod
-    {
+    public class ModEntry : Mod {
         private Harmony harmony;
         public static IMonitor StaticMonitor;
 
         public override void Entry(IModHelper helper) {
             // Initialize Harmony and apply patches
+            StaticMonitor = Monitor;
             harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(
-                original: AccessTools.Method(typeof(IClickableMenu), nameof(IClickableMenu.drawHoverText), new[] {typeof(SpriteBatch), typeof(StringBuilder), typeof(SpriteFont), typeof(int), typeof(int), typeof(int), typeof(string), typeof(int), typeof(string[]), typeof(Item), typeof(int), typeof(string), typeof(int), typeof(int), typeof(int), typeof(float), typeof(CraftingRecipe), typeof(IList<Item>), typeof(Texture2D), typeof(Rectangle), typeof(Color), typeof(Color), typeof(float), typeof(int), typeof(int)}),
-                prefix: new HarmonyMethod(typeof(ModEntry), nameof(ModifyItemDescription))
+                original: AccessTools.Method(typeof(MeleeWeapon), nameof(MeleeWeapon.drawTooltip)),
+                postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModifyItemDescription))
             );
-            StaticMonitor = Monitor;
+            harmony.Patch(
+                original: AccessTools.Method(typeof(MeleeWeapon),
+                    nameof(MeleeWeapon.getExtraSpaceNeededForTooltipSpecialIcons)),
+                postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModifyTooltipHeight))
+            );
+
 
             Monitor.Log("DPS Stat loaded with Harmony patch.", LogLevel.Info);
             helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
         }
-        
-        [HarmonyPrefix]
-        private static void ModifyItemDescription(MeleeWeapon __instance, ref string[] __8, ref Item __9) {
-            if (__9 == null || __9 is not MeleeWeapon) {
-                return;
-            }
-            string[] altered;
-            if (__8 != null) {
-                altered = new string[__8.Length + 1];
-                for (int i = 0; i < __8.Length; i++) {
-                    altered[i] = __8[i];
-                }
-            }
-            else {
-                altered = new string[1];
-            }
 
-            altered[altered.Length - 1] = "1";
-            __8 = altered;
+        [HarmonyPostfix]
+        private static void ModifyTooltipHeight(MeleeWeapon __instance, ref Point __result) {
+            StaticMonitor.Log("Modifying tooltip height...", LogLevel.Info);
+            __result.Y += 48;
+        }
 
-            
-            StaticMonitor.Log("Modified buffs array", LogLevel.Info);
+    [HarmonyPostfix]
+        private static void ModifyItemDescription(MeleeWeapon __instance, SpriteBatch __0, ref int __1, ref int __2, SpriteFont __3, float __4, StringBuilder __5) {
+            Utility.drawWithShadow(__0, Game1.mouseCursors2, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(127, 35, 10, 10), Color.White, 0f, Vector2.Zero, 4f, flipped: false, 1f);
+            Utility.drawTextWithShadow(__0, "Hello", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 52), Color.White);
+            __2 += (int)Math.Max(__3.MeasureString("TT").Y, 48f);
+            //StaticMonitor.Log("Modified tooltip", LogLevel.Info);
         }
 
         private void OnReturnedToTitle(object sender, EventArgs e) {

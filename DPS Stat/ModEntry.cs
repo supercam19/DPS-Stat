@@ -12,11 +12,9 @@ namespace DPS_Stat
 {
     public class ModEntry : Mod {
         private Harmony harmony;
-        public static IMonitor StaticMonitor;
 
         public override void Entry(IModHelper helper) {
             // Initialize Harmony and apply patches
-            StaticMonitor = Monitor;
             harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(
                 original: AccessTools.Method(typeof(MeleeWeapon), nameof(MeleeWeapon.drawTooltip)),
@@ -29,27 +27,48 @@ namespace DPS_Stat
             );
 
 
-            Monitor.Log("DPS Stat loaded with Harmony patch.", LogLevel.Info);
             helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
         }
 
         [HarmonyPostfix]
         private static void ModifyTooltipHeight(MeleeWeapon __instance, ref Point __result) {
-            StaticMonitor.Log("Modifying tooltip height...", LogLevel.Info);
+            if (__instance is null) return;
+            if (__instance.isScythe()) return;
             __result.Y += 48;
         }
 
-    [HarmonyPostfix]
+        [HarmonyPostfix]
         private static void ModifyItemDescription(MeleeWeapon __instance, SpriteBatch __0, ref int __1, ref int __2, SpriteFont __3, float __4, StringBuilder __5) {
-            Utility.drawWithShadow(__0, Game1.mouseCursors2, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(127, 35, 10, 10), Color.White, 0f, Vector2.Zero, 4f, flipped: false, 1f);
-            Utility.drawTextWithShadow(__0, "Hello", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 52), Color.White);
+            if (__instance is null) return;
+            if (__instance.isScythe()) return;
+            Utility.drawWithShadow(__0, Game1.mouseCursors, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(80, 0, 13, 13), Color.White, 0f, Vector2.Zero, 3f, flipped: false, 1f);
+            Utility.drawTextWithShadow(__0, GetDPS(__instance) + " DPS", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Color.Black);
             __2 += (int)Math.Max(__3.MeasureString("TT").Y, 48f);
-            //StaticMonitor.Log("Modified tooltip", LogLevel.Info);
+        }
+
+        private static string GetDPS(MeleeWeapon weapon) {
+            return ComputeDPS(
+                weapon.type.Value,
+                weapon.minDamage.Value,
+                weapon.maxDamage.Value,
+                weapon.critMultiplier.Value,
+                weapon.speed.Value,
+                weapon.critChance.Value
+            );
+        }
+
+        private static string ComputeDPS(int type, int minDamage, int maxDamage, float critMultiplier, int speed, float critChance) {
+            float avgDmg = (float)(minDamage + maxDamage) / 2;
+            float avgCrit = avgDmg * critMultiplier;
+            // MeleeWeapon.cs:1447 - Displayed speed is half of actual speed
+            float atksPerSec = 1000f / (400 - 20 * speed) * (type == 1 ? 4 : 1);
+            float avgWithCrits = avgCrit * critChance + avgDmg * (1 - critChance);
+            int DPS = (int)Math.Round(avgWithCrits * atksPerSec);
+            return DPS.ToString();
         }
 
         private void OnReturnedToTitle(object sender, EventArgs e) {
             harmony.UnpatchAll(ModManifest.UniqueID);
-            Monitor.Log("Harmony patches removed", LogLevel.Info);
         }
     }
 }

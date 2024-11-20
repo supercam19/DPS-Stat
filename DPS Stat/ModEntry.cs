@@ -3,6 +3,7 @@ using System.Text;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -37,12 +38,14 @@ namespace DPS_Stat
             __result.Y += 48;
         }
 
+        // public override void drawTooltip(SpriteBatch spriteBatch, ref int x, ref int y, SpriteFont font, float alpha, StringBuilder overrideText)
         [HarmonyPostfix]
-        private static void ModifyItemDescription(MeleeWeapon __instance, SpriteBatch __0, ref int __1, ref int __2, SpriteFont __3, float __4, StringBuilder __5) {
+        private static void ModifyItemDescription(MeleeWeapon __instance,
+            SpriteBatch __0, ref int __1, ref int __2, SpriteFont __3, float __4, StringBuilder __5) {
             if (__instance is null) return;
             if (__instance.isScythe()) return;
-            Utility.drawWithShadow(__0, Game1.mouseCursors, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(80, 0, 13, 13), Color.White, 0f, Vector2.Zero, 3f, flipped: false, 1f);
-            Utility.drawTextWithShadow(__0, GetDPS(__instance) + " DPS", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Color.Black);
+            Utility.drawWithShadow(__0, Game1.mouseCursors_1_6, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(502, 430, 10, 10), Color.White, 0f, Vector2.Zero, 3f, flipped: false, 1f);
+            Utility.drawTextWithShadow(__0, GetDPS(__instance) + " DPS", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Game1.textColor * 0.9f * __4);
             __2 += (int)Math.Max(__3.MeasureString("TT").Y, 48f);
         }
 

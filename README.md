@@ -1,4 +1,4 @@
-![banner](media/banner_upscaled3x.png)
+![banner](media/small_preview_3x.png)
 
 # DPS Stat
 DPS Stat is a simple Stardew Valley mod that adds a damage per second stat to the bottom of weapon tooltips. Requires SMAPI.
@@ -9,6 +9,6 @@ DPS Stat is a simple Stardew Valley mod that adds a damage per second stat to th
 * Multiplayer Compatible
 
 <p align="center">
-    <img src="media/preview1.png"/>
+    <img src="media/full_preview.png"/>
 </p>
 

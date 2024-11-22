@@ -44,7 +44,7 @@ namespace DPS_Stat
             SpriteBatch __0, ref int __1, ref int __2, SpriteFont __3, float __4, StringBuilder __5) {
             if (__instance is null) return;
             if (__instance.isScythe()) return;
-            Utility.drawWithShadow(__0, Game1.mouseCursors_1_6, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(502, 430, 10, 10), Color.White, 0f, Vector2.Zero, 3f, flipped: false, 1f);
+            Utility.drawWithShadow(__0, Game1.mouseCursors_1_6, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(502, 430, 10, 10), Color.White, 0f, Vector2.Zero, 4f, flipped: false, 1f);
             Utility.drawTextWithShadow(__0, GetDPS(__instance) + " DPS", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Game1.textColor * 0.9f * __4);
             __2 += (int)Math.Max(__3.MeasureString("TT").Y, 48f);
         }

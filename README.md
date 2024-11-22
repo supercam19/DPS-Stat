@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="media/small_preview.png"/>
+    <img src="media/banner.png"/>
 </p>
 
 # DPS Stat
@@ -11,6 +11,6 @@ DPS Stat is a simple Stardew Valley mod that adds a damage per second stat to th
 * Multiplayer Compatible
 
 <p align="center">
-    <img src="media/full_preview.png"/>
+    <img src="media/preview2.png"/>
 </p>
 

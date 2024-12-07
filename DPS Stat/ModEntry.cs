@@ -1,21 +1,17 @@
-﻿using System.Reflection.Emit;
-using System.Text;
+﻿using System.Text;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Menus;
 using StardewValley.Tools;
+using System.Diagnostics;
 
 namespace DPS_Stat
 {
     public class ModEntry : Mod {
         private Harmony harmony;
-
         public override void Entry(IModHelper helper) {
-            // Initialize Harmony and apply patches
             harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(
                 original: AccessTools.Method(typeof(MeleeWeapon), nameof(MeleeWeapon.drawTooltip)),
@@ -61,10 +57,13 @@ namespace DPS_Stat
         }
 
         private static string ComputeDPS(int type, int minDamage, int maxDamage, float critMultiplier, int speed, float critChance) {
+            // Unclear what the actual effective limit on speed is
+            if (speed > 13 || type == 1)
+                speed = 14;
             float avgDmg = (float)(minDamage + maxDamage) / 2;
             float avgCrit = avgDmg * critMultiplier;
             // MeleeWeapon.cs:1447 - Displayed speed is half of actual speed
-            float atksPerSec = 1000f / (400 - 20 * speed) * (type == 1 ? 4 : 1);
+            float atksPerSec = 1000f / (400 - 20 * speed);
             float avgWithCrits = avgCrit * critChance + avgDmg * (1 - critChance);
             int DPS = (int)Math.Round(avgWithCrits * atksPerSec);
             return DPS.ToString();

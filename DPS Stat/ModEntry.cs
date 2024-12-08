@@ -25,6 +25,8 @@ namespace DPS_Stat
 
 
             helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
+
+            TrinketStat.Init(helper, harmony);
         }
 
         [HarmonyPostfix]

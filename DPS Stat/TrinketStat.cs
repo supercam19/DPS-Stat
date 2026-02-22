@@ -25,13 +25,13 @@ public class TrinketStat {
     private static void AppendStat(Item __instance, SpriteBatch __0, ref int __1, 
         ref int __2, SpriteFont __3, float __4) {
         if (__instance is Trinket t) {
-            if (t.GetEffect() is IceOrbTrinketEffect iote) {
+            if (t.GetEffect() is IceOrbTrinketEffect iceOrb) {
                 Utility.drawWithShadow(__0, Game1.objectSpriteSheet, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(65, 577, 15, 15), Color.White, 0f, Vector2.Zero, 40f/15f, flipped: false, 1f);
-                Utility.drawTextWithShadow(__0, (iote.FreezeTime / iote.ProjectileDelay).ToString("P0"), __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Game1.textColor * 0.9f * __4);
+                Utility.drawTextWithShadow(__0, (iceOrb.FreezeTime / iceOrb.ProjectileDelay).ToString("P0"), __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Game1.textColor * 0.9f * __4);
             }
-            else if (t.GetEffect() is MagicQuiverTrinketEffect mqte) {
+            else if (t.GetEffect() is MagicQuiverTrinketEffect quiver) {
                 Utility.drawWithShadow(__0, Game1.mouseCursors_1_6, new Vector2(__1 + 16 + 4, __2 + 16 + 4), new Rectangle(502, 430, 10, 10), Color.White, 0f, Vector2.Zero, 4f, flipped: false, 1f);
-                Utility.drawTextWithShadow(__0, $"{Math.Round((mqte.MinDamage + mqte.MaxDamage) * 500 / mqte.ProjectileDelay)} DPS", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Game1.textColor * 0.9f * __4);
+                Utility.drawTextWithShadow(__0, $"{Math.Round((quiver.MinDamage + quiver.MaxDamage) * 500 / quiver.ProjectileDelay)} DPS", __3, new Vector2(__1 + 16 + 52, __2 + 16 + 12), Game1.textColor * 0.9f * __4);
             }
         }
     }

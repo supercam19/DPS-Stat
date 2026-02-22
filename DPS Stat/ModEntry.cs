@@ -59,16 +59,33 @@ namespace DPS_Stat
         }
 
         private static string ComputeDPS(int type, int minDamage, int maxDamage, float critMultiplier, int speed, float critChance) {
-            // Unclear what the actual effective limit on speed is
-            if (speed > 13 || type == 1)
-                speed = 14;
+            speed = GetCappedSpeed(type, speed);
             float avgDmg = (float)(minDamage + maxDamage) / 2;
             float avgCrit = avgDmg * critMultiplier;
-            // MeleeWeapon.cs:1447 - Displayed speed is half of actual speed
+            // MeleeWeapon.cs:1447 - Displayed speed is half of actual speed; removes 20ms from cooldown
             float atksPerSec = 1000f / (400 - 20 * speed);
             float avgWithCrits = avgCrit * critChance + avgDmg * (1 - critChance);
             int DPS = (int)Math.Round(avgWithCrits * atksPerSec);
             return DPS.ToString();
+        }
+
+        /*
+         * This function returns the max speed of a weapon considering invincibility time (limiting factor on daggers or modded weapons)
+         * 
+         * Daggers incur an invincibility time of 150ms, swords and clubs incur 225ms.
+         * 150ms -> 12 speed
+         * 225ms -> 8 speed
+         * 
+         * Dagger is given a base of 10 speed (200ms attack delay) thanks to experimental results from
+         * https://birdhouserun.bearblog.dev/stardew-valley-weapons-dps
+         * The actual dagger attack speed code is super difficult to understand, so it's hard to get a theoretical speed
+         */
+        private static int GetCappedSpeed(int type, int speed) {
+            if (type == 1) {
+                return Math.Min(12, 10 + speed);
+            }
+
+            return Math.Min(8, speed);
         }
 
         private void OnReturnedToTitle(object sender, EventArgs e) {

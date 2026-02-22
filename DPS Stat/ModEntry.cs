@@ -79,10 +79,10 @@ namespace DPS_Stat
          */
         private static int GetCappedSpeed(int type, int speed) {
             if (type == 1) {
-                return Math.Min(12, 10 + speed);
+                return Math.Min(13, 10 + speed);
             }
 
-            return Math.Min(8, speed);
+            return Math.Min(9, speed);
         }
     }
 }

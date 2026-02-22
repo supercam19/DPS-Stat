@@ -23,9 +23,6 @@ namespace DPS_Stat
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModifyTooltipHeight))
             );
 
-
-            helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
-
             TrinketStat.Init(helper, harmony);
         }
 
@@ -86,10 +83,6 @@ namespace DPS_Stat
             }
 
             return Math.Min(8, speed);
-        }
-
-        private void OnReturnedToTitle(object sender, EventArgs e) {
-            harmony.UnpatchAll(ModManifest.UniqueID);
         }
     }
 }

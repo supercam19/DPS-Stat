@@ -1,7 +1,7 @@
 ﻿{
   "Name": "DPS Stat",
   "Author": "supercam19",
-  "Version": "1.1.0",
+  "Version": "1.1.1",
   "Description": "Adds a damage per second stat to weapon descriptions.",
   "UniqueID": "supercam19.dps_stat",
   "EntryDll": "DPS Stat.dll",

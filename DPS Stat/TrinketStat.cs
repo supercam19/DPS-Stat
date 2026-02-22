@@ -1,15 +1,22 @@
-﻿using HarmonyLib;
+﻿/*
+ * DPS Stat
+ * Cameron Labelle
+ * MIT License
+ * 2026
+ * https://github.com/supercam19/DPS-Stat
+ */
+
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects.Trinkets;
-using StardewValley.Projectiles;
 
 namespace DPS_Stat;
 
 public class TrinketStat {
-    public static void Init(IModHelper helper, Harmony harmony) {
+    public static void Patch(IModHelper helper, Harmony harmony) {
         harmony.Patch(
             original: AccessTools.Method(typeof(Item), nameof(Item.drawTooltip)),
             postfix: new HarmonyMethod(typeof(TrinketStat), nameof(AppendStat))

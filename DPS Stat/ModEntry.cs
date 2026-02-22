@@ -1,11 +1,18 @@
-﻿using System.Text;
+﻿/*
+ * DPS Stat
+ * Cameron Labelle
+ * MIT License
+ * 2026
+ * https://github.com/supercam19/DPS-Stat
+ */
+
+using System.Text;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
-using System.Diagnostics;
 
 namespace DPS_Stat
 {
@@ -23,7 +30,7 @@ namespace DPS_Stat
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModifyTooltipHeight))
             );
 
-            TrinketStat.Init(helper, harmony);
+            TrinketStat.Patch(helper, harmony);
         }
 
         [HarmonyPostfix]
@@ -70,19 +77,22 @@ namespace DPS_Stat
          * This function returns the max speed of a weapon considering invincibility time (limiting factor on daggers or modded weapons)
          * 
          * Daggers incur an invincibility time of 150ms, swords and clubs incur 225ms.
-         * 150ms -> 12 speed
-         * 225ms -> 8 speed
+         * 150ms -> 13 speed
+         * 225ms -> 9 speed
          * 
          * Dagger is given a base of 10 speed (200ms attack delay) thanks to experimental results from
          * https://birdhouserun.bearblog.dev/stardew-valley-weapons-dps
          * The actual dagger attack speed code is super difficult to understand, so it's hard to get a theoretical speed
          */
         private static int GetCappedSpeed(int type, int speed) {
+            const int MAX_SPEED = 9;
+            const int MAX_SPEED_DAGGER = 13;
+            const int BASE_SPEED_DAGGER = 10;
             if (type == 1) {
-                return Math.Min(13, 10 + speed);
+                return Math.Min(MAX_SPEED_DAGGER, BASE_SPEED_DAGGER + speed);
             }
 
-            return Math.Min(9, speed);
+            return Math.Min(MAX_SPEED, speed);
         }
     }
 }

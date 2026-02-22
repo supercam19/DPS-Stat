@@ -1,5 +1,14 @@
 # DPS Stat Changelog
 
+## Update v1.1.1 (February 21, 2026)
+
+### Changes
+ * Changed DPS calculations for daggers to align with experimental attack speed values
+ * The limit for attack speed on a weapon is now the invincibility timer of an enemy
+
+### Fixes 
+ * The mod now continues to work after quitting to the title screen then loading a save
+
 ## Update v1.1.0 (December 8, 2024)
 
 ### Additions
